@@ -1,259 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PerforMate Dashboard</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: linear-gradient(135deg, #4a90e2, #6c8be7);
-      color: white;
-      padding: 2rem 2rem;
-      text-align: center;
-      border-bottom: 5px solid #2d6dc1;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      transition: all 0.3s ease-in-out;
-    }
-    .card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-    h2 {
-      color: #333;
-      font-size: 1.75rem;
-      margin-bottom: 1rem;
-    }
-    .score {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #6c8be7;
-    }
-    .button {
-      padding: 0.8rem 1.5rem;
-      background-color: #6c8be7;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 1rem;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-    .button:hover {
-      background-color: #4a90e2;
-    }
-    .hidden {
-      display: none;
-    }
-    #chatbot {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #ffffff;
-      border-radius: 10px;
-      width: 320px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
-      border: 1px solid #ddd;
-      animation: fadeIn 0.5s ease-out;
-    }
-    #chat-header {
-      background: #4a90e2;
-      color: white;
-      padding: 15px;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-    #chat-log {
-      padding: 15px;
-      height: 200px;
-      overflow-y: auto;
-      font-size: 0.95rem;
-      background-color: #f7f7f7;
-      border-bottom: 1px solid #ccc;
-    }
-    #chat-input {
-      display: flex;
-      padding: 10px;
-      background-color: #fff;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-    }
-    #chat-input input {
-      flex: 1;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 8px;
-      margin-right: 10px;
-    }
-    #chat-input button {
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #chat-input button:hover {
-      background-color: #3a78c2;
-    }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PerforMate Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        --bg: #f9fafe;
+        --text: #333;
+        --card: white;
+        --accent: #4a90e2;
+        --hover: #3a78c2;
       }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
+      [data-theme="dark"] {
+        --bg: #1e1e2f;
+        --text: #f0f0f0;
+        --card: #2c2c3e;
+        --accent: #4a90e2;
+        --hover: #6c8be7;
       }
-    }
-
-    /* New feature: Notification Badge */
-    .notification-badge {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #f44336;
-      color: white;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      text-align: center;
-      font-size: 16px;
-      font-weight: bold;
-      display: none;
-    }
-
-  </style>
-</head>
-<body>
-  <header>
-    <h1>PerforMate: AI-Powered Performance & Compensation Dashboard</h1>
-  </header>
-
-  <!-- New Feature: Notification Badge -->
-  <div class="notification-badge" id="notificationBadge">1</div>
-
-  <main class="container">
-    <div class="grid">
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background: linear-gradient(135deg, var(--accent), #6c8be7);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 5px solid #2d6dc1;
+      }
+      header h1 {
+        margin: 0;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .button {
+        background-color: var(--accent);
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: var(--hover);
+      }
+      .progress-container {
+        background: #e0e0e0;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 20px;
+        background-color: var(--accent);
+        width: 60%;
+        text-align: center;
+        color: white;
+        font-size: 0.8rem;
+        line-height: 20px;
+      }
+      .badge-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .badge {
+        background: linear-gradient(135deg, #ffb347, #ffcc33);
+        padding: 8px 12px;
+        border-radius: 20px;
+        color: #333;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      #chat-toggle-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--accent);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        z-index: 1000;
+      }
+      #chatbot {
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        width: 320px;
+        background: var(--card);
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        display: none;
+      }
+      #chat-header {
+        background: var(--accent);
+        color: white;
+        padding: 10px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        text-align: center;
+      }
+      #chat-log {
+        height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #f0f0f0;
+        color: black;
+      }
+      #chat-input {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+      }
+      #chat-input input {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      #chat-input button {
+        margin-left: 10px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body data-theme="light">
+    <header>
+      <h1>PerforMate: Real-Time Performance & Growth Tracker</h1>
+      <button class="button" onclick="toggleTheme()">Toggle Theme</button>
+    </header>
+    <main class="container">
       <div class="card">
-        <h2>Employee Performance Score</h2>
-        <p class="score" id="performanceScore">87%</p>
-        <p>Performance is evaluated based on goal completion, project outcomes, and peer reviews.</p>
-        <button class="button" onclick="adjustScore('performance')">Adjust Score</button>
+        <h2>Daily Goals</h2>
+        <p>Complete 5 daily check-ins</p>
+        <div class="progress-container">
+          <div class="progress-bar">3/5 Completed</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Performance Score</h2>
+        <p><span id="performanceCounter">0</span>%</p>
+        <p>Goal completion, reviews & milestones</p>
       </div>
       <div class="card">
         <h2>Engagement Score</h2>
-        <p class="score" id="engagementScore">72%</p>
-        <p>AI-Driven Engagement Score = 20% Feedback + 30% Sentiment + 20% Recognition + 30% Workload</p>
-        <button class="button" onclick="adjustScore('engagement')">Adjust Score</button>
+        <p><span id="engagementCounter">0</span>%</p>
+        <p>Sentiment, workload, and peer input</p>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>Compensation Overview</h2>
-      <p><strong>Performance-Based Compensation:</strong> Rewards linked to goal achievement.</p>
-      <p><strong>Compensation Fairness Audit:</strong> Ensuring equitable pay across departments.</p>
-      <p><strong>Goal-Linked Rewards:</strong> Variable pay based on individual and team goals.</p>
-      <p><strong>Real-Time Adjustments:</strong> Bonuses, promotions, salary revisions.</p>
-      <button class="button" onclick="showSalaryBreakdown()">View Salary Breakdown</button>
-      <div id="salaryBreakdown" class="hidden">
-        <p><strong>Base Salary:</strong> $70,000</p>
-        <p><strong>Performance Bonus:</strong> $3,000</p>
-        <p><strong>Engagement Bonus:</strong> $2,000</p>
+      <div class="card">
+        <h2>Motivation Boost</h2>
+        <blockquote id="quote">
+          “Success is the sum of small efforts repeated daily.”
+        </blockquote>
+        <cite>– James Clear</cite>
       </div>
-    </div>
+      <div class="card">
+        <h2>Team Sentiment</h2>
+        <p>😊 😐 😟</p>
+        <p>Positive: 65% | Neutral: 25% | Low: 10%</p>
+      </div>
+      <div class="card">
+        <h2>Achievement Badges</h2>
+        <div class="badge-container">
+          <div class="badge">🏅 Team Player</div>
+          <div class="badge">🚀 Goal Crusher</div>
+          <div class="badge">📈 Top Performer</div>
+          <div class="badge">🧠 Skill Builder</div>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>Alerts & Recommendations</h2>
-      <ul>
-        <li>🔔 Low engagement detected in Q2 – Recommend check-in with manager.</li>
-        <li>💡 High engagement but low output – Suggest coaching intervention.</li>
-        <li>📈 Eligible for performance bonus this cycle.</li>
-      </ul>
-    </div>
-  </main>
+      <!-- Leaderboard Section -->
+      <div class="card">
+        <h2>🏆 Team Leaderboard</h2>
+        <ol>
+          <li><strong>Alex Johnson</strong> - 95 pts</li>
+          <li><strong>Sara Lee</strong> - 89 pts</li>
+          <li><strong>Ravi Kumar</strong> - 85 pts</li>
+          <li><strong>Mei Wong</strong> - 82 pts</li>
+          <li><strong>David Kim</strong> - 80 pts</li>
+        </ol>
+      </div>
 
-  <div id="chatbot">
-    <div id="chat-header">PerforMate AI Chatbot</div>
-    <div id="chat-log"></div>
-    <div id="chat-input">
-      <input type="text" id="userInput" placeholder="Ask me anything..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
+      <!-- Productivity Timer Section -->
+      <div class="card">
+        <h2>⏱️ Productivity Timer</h2>
+        <p>Focus Mode: <span id="timer">25:00</span></p>
+        <button class="button" onclick="startTimer()">Start</button>
+        <button class="button" onclick="resetTimer()">Reset</button>
+      </div>
 
-  <script>
-    // Notification function
-    function showNotification() {
-      const badge = document.getElementById('notificationBadge');
-      badge.style.display = 'block';
-    }
+      <!-- Feedback Form Section -->
+      <div class="card">
+        <h2>📝 Anonymous Feedback</h2>
+        <form onsubmit="submitFeedback(event)">
+          <textarea
+            id="feedbackText"
+            rows="4"
+            style="
+              width: 100%;
+              border-radius: 8px;
+              padding: 0.5rem;
+              border: 1px solid #ccc;
+            "
+            placeholder="Enter your feedback..."
+          ></textarea>
+          <br /><br />
+          <button class="button" type="submit">Submit Feedback</button>
+        </form>
+        <p id="feedbackMessage" style="color: green; display: none">
+          Thank you for your feedback!
+        </p>
+      </div>
+    </main>
 
-    function adjustScore(type) {
-      const scoreId = type === 'performance' ? 'performanceScore' : 'engagementScore';
-      const currentScore = parseInt(document.getElementById(scoreId).textContent.replace('%', ''));
-      const newScore = prompt(`Current ${type} score: ${currentScore}%. Enter new score:`);
-      if (newScore !== null && !isNaN(newScore) && newScore >= 0 && newScore <= 100) {
-        document.getElementById(scoreId).textContent = `${newScore}%`;
-        showNotification(); // Show notification when score is adjusted
-      } else {
-        alert('Please enter a valid number between 0 and 100.');
+    <script>
+      // Productivity Timer Script
+      let countdown;
+      function startTimer() {
+        let time = 25 * 60;
+        clearInterval(countdown);
+        countdown = setInterval(() => {
+          const minutes = Math.floor(time / 60);
+          const seconds = time % 60;
+          document.getElementById("timer").textContent = `${String(
+            minutes
+          ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+          if (time-- <= 0) clearInterval(countdown);
+        }, 1000);
       }
-    }
+      function resetTimer() {
+        clearInterval(countdown);
+        document.getElementById("timer").textContent = "25:00";
+      }
 
-    function showSalaryBreakdown() {
-      const breakdown = document.getElementById('salaryBreakdown');
-      breakdown.classList.toggle('hidden');
-    }
+      // Feedback Form Submission
+      function submitFeedback(event) {
+        event.preventDefault();
+        document.getElementById("feedbackText").value = "";
+        const message = document.getElementById("feedbackMessage");
+        message.style.display = "block";
+        setTimeout(() => (message.style.display = "none"), 3000);
+      }
+    </script>
 
-    function sendMessage() {
-      const input = document.getElementById("userInput");
-      const log = document.getElementById("chat-log");
-      const userText = input.value.trim();
-      if (userText) {
-        const userDiv = document.createElement("div");
-        userDiv.textContent = `👤 You: ${userText}`;
-        log.appendChild(userDiv);
+    <button id="chat-toggle-btn" onclick="toggleChatbot()">💬 Chat</button>
+    <div id="chatbot">
+      <div id="chat-header">PerforMate Bot</div>
+      <div id="chat-log"></div>
+      <div id="chat-input">
+        <input type="text" id="userInput" placeholder="Ask me something..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
 
-        const botDiv = document.createElement("div");
-        const lowerText = userText.toLowerCase();
-        if (lowerText.includes("bonus") || lowerText.includes("reward")) {
-          botDiv.textContent = "🤖 Bot: Rewards are calculated based on goal completion and engagement trends.";
-        } else if (lowerText.includes("adjust") || lowerText.includes("promotion")) {
-          botDiv.textContent = "🤖 Bot: Real-time suggestions are available for bonuses and promotions based on scores.";
-        } else {
-          botDiv.textContent = "🤖 Bot: I'm here to help with performance, engagement, and compensation queries!";
+    <script>
+      function toggleTheme() {
+        const body = document.body;
+        body.dataset.theme = body.dataset.theme === "light" ? "dark" : "light";
+      }
+      function toggleChatbot() {
+        const bot = document.getElementById("chatbot");
+        bot.style.display = bot.style.display === "block" ? "none" : "block";
+      }
+      function sendMessage() {
+        const input = document.getElementById("userInput");
+        const log = document.getElementById("chat-log");
+        const msg = input.value.trim();
+        if (msg) {
+          log.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
+          log.innerHTML += `<div><strong>Bot:</strong> I'll get back to you soon!</div>`;
+          input.value = "";
+          log.scrollTop = log.scrollHeight;
         }
-        log.appendChild(botDiv);
-        input.value = "";
-        log.scrollTop = log.scrollHeight;
       }
-    }
-  </script>
-</body>
+      function animateCounter(id, target) {
+        let count = 0;
+        const step = target / 60;
+        const interval = setInterval(() => {
+          count += step;
+          if (count >= target) {
+            count = target;
+            clearInterval(interval);
+          }
+          document.getElementById(id).innerText = Math.floor(count);
+        }, 20);
+      }
+      animateCounter("performanceCounter", 87);
+      animateCounter("engagementCounter", 72);
+    </script>
+  </body>
 </html>
