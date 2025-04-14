@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PerforMate Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(135deg, #4a90e2, #6c8be7);
+      color: white;
+      padding: 2rem 2rem;
+      text-align: center;
+      border-bottom: 5px solid #2d6dc1;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease-in-out;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      color: #333;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    .score {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #6c8be7;
+    }
+    .button {
+      padding: 0.8rem 1.5rem;
+      background-color: #6c8be7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #4a90e2;
+    }
+    .hidden {
+      display: none;
+    }
+    #chatbot {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      border: 1px solid #ddd;
+      animation: fadeIn 0.5s ease-out;
+    }
+    #chat-header {
+      background: #4a90e2;
+      color: white;
+      padding: 15px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+    #chat-log {
+      padding: 15px;
+      height: 200px;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      background-color: #f7f7f7;
+      border-bottom: 1px solid #ccc;
+    }
+    #chat-input {
+      display: flex;
+      padding: 10px;
+      background-color: #fff;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    #chat-input input {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      margin-right: 10px;
+    }
+    #chat-input button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #chat-input button:hover {
+      background-color: #3a78c2;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* New feature: Notification Badge */
+    .notification-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #f44336;
+      color: white;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PerforMate: AI-Powered Performance & Compensation Dashboard</h1>
+  </header>
+
+  <!-- New Feature: Notification Badge -->
+  <div class="notification-badge" id="notificationBadge">1</div>
+
+  <main class="container">
+    <div class="grid">
+      <div class="card">
+        <h2>Employee Performance Score</h2>
+        <p class="score" id="performanceScore">87%</p>
+        <p>Performance is evaluated based on goal completion, project outcomes, and peer reviews.</p>
+        <button class="button" onclick="adjustScore('performance')">Adjust Score</button>
+      </div>
+      <div class="card">
+        <h2>Engagement Score</h2>
+        <p class="score" id="engagementScore">72%</p>
+        <p>AI-Driven Engagement Score = 20% Feedback + 30% Sentiment + 20% Recognition + 30% Workload</p>
+        <button class="button" onclick="adjustScore('engagement')">Adjust Score</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Compensation Overview</h2>
+      <p><strong>Performance-Based Compensation:</strong> Rewards linked to goal achievement.</p>
+      <p><strong>Compensation Fairness Audit:</strong> Ensuring equitable pay across departments.</p>
+      <p><strong>Goal-Linked Rewards:</strong> Variable pay based on individual and team goals.</p>
+      <p><strong>Real-Time Adjustments:</strong> Bonuses, promotions, salary revisions.</p>
+      <button class="button" onclick="showSalaryBreakdown()">View Salary Breakdown</button>
+      <div id="salaryBreakdown" class="hidden">
+        <p><strong>Base Salary:</strong> $70,000</p>
+        <p><strong>Performance Bonus:</strong> $3,000</p>
+        <p><strong>Engagement Bonus:</strong> $2,000</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Alerts & Recommendations</h2>
+      <ul>
+        <li>🔔 Low engagement detected in Q2 – Recommend check-in with manager.</li>
+        <li>💡 High engagement but low output – Suggest coaching intervention.</li>
+        <li>📈 Eligible for performance bonus this cycle.</li>
+      </ul>
+    </div>
+  </main>
+
+  <div id="chatbot">
+    <div id="chat-header">PerforMate AI Chatbot</div>
+    <div id="chat-log"></div>
+    <div id="chat-input">
+      <input type="text" id="userInput" placeholder="Ask me anything..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Notification function
+    function showNotification() {
+      const badge = document.getElementById('notificationBadge');
+      badge.style.display = 'block';
+    }
+
+    function adjustScore(type) {
+      const scoreId = type === 'performance' ? 'performanceScore' : 'engagementScore';
+      const currentScore = parseInt(document.getElementById(scoreId).textContent.replace('%', ''));
+      const newScore = prompt(`Current ${type} score: ${currentScore}%. Enter new score:`);
+      if (newScore !== null && !isNaN(newScore) && newScore >= 0 && newScore <= 100) {
+        document.getElementById(scoreId).textContent = `${newScore}%`;
+        showNotification(); // Show notification when score is adjusted
+      } else {
+        alert('Please enter a valid number between 0 and 100.');
+      }
+    }
+
+    function showSalaryBreakdown() {
+      const breakdown = document.getElementById('salaryBreakdown');
+      breakdown.classList.toggle('hidden');
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const log = document.getElementById("chat-log");
+      const userText = input.value.trim();
+      if (userText) {
+        const userDiv = document.createElement("div");
+        userDiv.textContent = `👤 You: ${userText}`;
+        log.appendChild(userDiv);
+
+        const botDiv = document.createElement("div");
+        const lowerText = userText.toLowerCase();
+        if (lowerText.includes("bonus") || lowerText.includes("reward")) {
+          botDiv.textContent = "🤖 Bot: Rewards are calculated based on goal completion and engagement trends.";
+        } else if (lowerText.includes("adjust") || lowerText.includes("promotion")) {
+          botDiv.textContent = "🤖 Bot: Real-time suggestions are available for bonuses and promotions based on scores.";
+        } else {
+          botDiv.textContent = "🤖 Bot: I'm here to help with performance, engagement, and compensation queries!";
+        }
+        log.appendChild(botDiv);
+        input.value = "";
+        log.scrollTop = log.scrollHeight;
+      }
+    }
+  </script>
+</body>
+</html>
