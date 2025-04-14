@@ -205,7 +205,7 @@
 
       <!-- Productivity Timer Section -->
       <div class="card">
-        <h2>⏱️ Productivity Timer</h2>
+        <h2>⏱ Productivity Timer</h2>
         <p>Focus Mode: <span id="timer">25:00</span></p>
         <button class="button" onclick="startTimer()">Start</button>
         <button class="button" onclick="resetTimer()">Reset</button>
@@ -289,8 +289,8 @@
         const log = document.getElementById("chat-log");
         const msg = input.value.trim();
         if (msg) {
-          log.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
-          log.innerHTML += `<div><strong>Bot:</strong> I'll get back to you soon!</div>`;
+          log.innerHTML += <div><strong>You:</strong> ${msg}</div>;
+          log.innerHTML += <div><strong>Bot:</strong> I'll get back to you soon!</div>;
           input.value = "";
           log.scrollTop = log.scrollHeight;
         }
